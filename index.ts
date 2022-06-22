@@ -27,6 +27,7 @@ export class ALL4S {
         this.browser = await puppeteer.launch({
             headless: this.options.browserOptions.headless, defaultViewport: null,
             args: ['--start-maximized'],
+            ...this.options.browserOptions
         });
         this.page = await this.browser.newPage();
         this.watchCurrentPage();

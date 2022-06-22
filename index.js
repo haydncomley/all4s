@@ -23,10 +23,7 @@ class ALL4S {
             if (this.browser)
                 return;
             this.log('Starting.');
-            this.browser = yield puppeteer_1.default.launch({
-                headless: this.options.headless, defaultViewport: null,
-                args: ['--start-maximized'],
-            });
+            this.browser = yield puppeteer_1.default.launch(Object.assign({ headless: this.options.browserOptions.headless, defaultViewport: null, args: ['--start-maximized'] }, this.options.browserOptions));
             this.page = yield this.browser.newPage();
             this.watchCurrentPage();
             yield this.page.goto(this.options.startPage);
@@ -51,7 +48,7 @@ class ALL4S {
     }
     checkEventLogExists() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.options.debug || this.options.headless)
+            if (!this.options.debug || this.options.browserOptions.headless)
                 return;
             yield this.page.evaluate(() => {
                 if (document && document.querySelector('#ALLFOUR_EVENT_PARENT'))
@@ -79,7 +76,7 @@ class ALL4S {
     logAction(title, element, context) {
         return __awaiter(this, void 0, void 0, function* () {
             this.log(title);
-            if (!this.options.debug || this.options.headless)
+            if (!this.options.debug || this.options.browserOptions.headless)
                 return {
                     started: () => { },
                     done: () => { },
