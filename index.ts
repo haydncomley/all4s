@@ -1,10 +1,13 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Product } from 'puppeteer';
 
 export interface IALL4Settings {
     startPage: string;
-    headless: boolean;
     debug?: boolean;
     debugHideConsole?: boolean;
+    browserOptions?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
+        product?: Product;
+        extraPrefsFirefox?: Record<string, unknown>;
+    }
 }
 
 export class ALL4S {
@@ -22,7 +25,7 @@ export class ALL4S {
         this.log('Starting.')
 
         this.browser = await puppeteer.launch({
-            headless: this.options.headless, defaultViewport: null,
+            headless: this.options.browserOptions.headless, defaultViewport: null,
             args: ['--start-maximized'],
         });
         this.page = await this.browser.newPage();
@@ -49,7 +52,7 @@ export class ALL4S {
     }
 
     private async checkEventLogExists() {
-        if (!this.options.debug || this.options.headless) return;
+        if (!this.options.debug || this.options.browserOptions.headless) return;
         await this.page.evaluate(() => {
             if (document && document.querySelector('#ALLFOUR_EVENT_PARENT')) return;
 
@@ -76,7 +79,7 @@ export class ALL4S {
 
     private async logAction(title: string, element: puppeteer.ElementHandle<Element> | string, context?: string) {
         this.log(title);
-        if (!this.options.debug || this.options.headless) return {
+        if (!this.options.debug || this.options.browserOptions.headless) return {
             started: () => { },
             done: () => { },
         };
@@ -253,7 +256,7 @@ export class ALL4S {
         done();
     }
 
-    public async doWaitFor(promise: () => Promise<any>, timeout?: number) {
+    public async doWaitFor<T extends Promise<any>>(promise: () => T, timeout?: number): Promise<T> {
         return new Promise(async (res) => {
             let done = false;
             this.log('Started a wait');

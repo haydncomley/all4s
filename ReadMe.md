@@ -20,10 +20,10 @@ import { ALL4S } from "all4s";
 (async () => {
     // Setup our new web crawler.
     const allFours = new ALL4S({
-        headless: false, // Hide or Show the browser.
         startPage: 'https://www.haydncomley.com/', // The page we initially load
-        debug: true // [OPTIONAL] Output actions to the console & show an on-screen event queue when not in 'headless' mode.
-        debugHideConsole: false // [OPTIONAL] Show the on-screen queue but suppress console output.
+        debug: true, // [OPTIONAL] Output actions to the console & show an on-screen event queue when not in 'headless' mode.
+        debugHideConsole: false, // [OPTIONAL] Show the on-screen queue but suppress console output
+        browserOptions: {} // [OPTIONAL] Parameters to be passed down to puppeteer
     });
 
     // Starts the browser instance.
